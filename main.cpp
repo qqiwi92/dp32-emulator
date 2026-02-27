@@ -1,5 +1,3 @@
+#include "utilities.hpp"
 #include <iostream>
-
-int main(){
-    std::cout << "hey\n";
-}
+int main() { print("hey"); }

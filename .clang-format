@@ -1,0 +1,17 @@
+Language: Cpp
+BasedOnStyle: LLVM
+NamespaceIndentation: All
+IndentWidth: 2
+FixNamespaceComments: false
+PointerAlignment: Left
+SpacesInAngles: true
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterClass: true
+  AfterControlStatement: false
+
+BinPackParameters: false
+AlignAfterOpenBracket: AlwaysBreak
+AllowAllParametersOfDeclarationOnNextLine: true
