@@ -1,5 +1,6 @@
 #include "cpu.hpp"
 #include "bus.hpp"
+#include <cstdint>
 
 CPU::CPU(BUS* b) : bus(b), pc(0), v(false), n(false), z(false) {}
 
@@ -15,11 +16,32 @@ void CPU::step()
   pc++;
 
   switch (op) {
+  case 0x00:
+    execute_add(r3, r1, r2);
+    break;
     // todo: opps
   }
 }
-void CPU::update_cc(uint32_t result, bool overflow_happened) {
-    z = (result == 0);
-    n = (result >> 31) & 1;
-    v = overflow_happened;
+void CPU::update_cc(uint32_t result, bool overflow_happened)
+{
+  z = (result == 0);
+  n = (result >> 31) & 1;
+  v = overflow_happened;
+}
+
+void CPU::execute_add(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  int32_t a = static_cast< int32_t >(regs[r1]);
+  int32_t b = static_cast< int32_t >(regs[r2]);
+
+  int32_t res = a + b;
+  bool ovf  = false;
+  
+  if (b > 0 && a > (INT32_MAX - b)) ovf = true;
+  else if (b < 0 && a < (INT32_MIN -b)) ovf  = true;
+  
+  regs[r3] = static_cast<uint32_t>(res);
+  
+  update_cc(regs[3], ovf);
+  
 }

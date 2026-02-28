@@ -20,6 +20,10 @@ private:
   bool v, n, z; // CC
 
   void update_cc(uint32_t result, bool overflow_happened);
+
+  
+  // alu funcs
+  void execute_add(uint8_t r3, uint8_t r1, uint8_t r2);
 };
 
 #endif
