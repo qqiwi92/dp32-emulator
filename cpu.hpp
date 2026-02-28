@@ -2,24 +2,24 @@
 #define CPU_HPP
 
 #include <cstdint>
+#include <vector>
 
-class Bus;
+class BUS;
 
-class CPU {
+class CPU
+{
 public:
-    CPU(Bus* b);
-    void step();
+  CPU(BUS* b);
+  void step();
 
 private:
-    Bus* bus; 
+  BUS* bus;
+  uint32_t regs[256]; // РОН
+  uint32_t pc;
 
-    uint32_t registers[256]; 
-    uint32_t pc;      
-    
-    bool flag_v, flag_n, flag_z; 
+  bool v, n, z; // CC
 
-    uint32_t fetch();
-    
+  void update_cc(uint32_t result, bool overflow_happened);
 };
 
 #endif
