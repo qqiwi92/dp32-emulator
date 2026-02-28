@@ -1,17 +1,18 @@
 #ifndef BUS_HPP
 #define BUS_HPP
 
-#include "cpu.hpp"
+#include <cstdint>
 #include "ram.hpp"
+class CPU; 
+class RAM;
 
-class Bus
-{
+class BUS {
 public:
-  RAM ram;
-  CPU cpu;
-    
-  uint8_t cpu_read(uint)
-private:
+  
+    RAM ram;
+
+    uint32_t read32(uint32_t address);
+    void write32(uint32_t address, uint32_t data);
 };
 
 #endif

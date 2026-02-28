@@ -2,15 +2,24 @@
 #define CPU_HPP
 
 #include <cstdint>
-#include <vector>
 
-class CPU
-{
+class Bus;
+
+class CPU {
 public:
-  CPU() : registers(255, 0) {}
-  void step();
+    CPU(Bus* b);
+    void step();
+
 private:
-  std::vector< uint32_t > registers;
+    Bus* bus; 
+
+    uint32_t registers[256]; 
+    uint32_t pc;      
+    
+    bool flag_v, flag_n, flag_z; 
+
+    uint32_t fetch();
+    
 };
 
 #endif

@@ -6,12 +6,12 @@
 class RAM
 {
 public:
-  RAM() : memory(4ULL * 1024 * 1024 * 1024, 0) {}
+  RAM() : memory(1024 * 1024, 0) {}
   uint8_t read(uint32_t address) { return memory[address]; }
-  void write(uint32_t address, uint8_t value) { memory[address] = value; }
+  void write(uint32_t address, uint32_t value) { memory[address] = value; }
 
 private:
-  std::vector< uint8_t > memory;
+  std::vector< uint32_t > memory;
 };
 
 
