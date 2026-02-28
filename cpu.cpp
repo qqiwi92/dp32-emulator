@@ -2,8 +2,11 @@
 #include "bus.hpp"
 #include <cstdint>
 
-CPU::CPU(BUS* b) : bus(b), pc(0), v(false), n(false), z(false) {}
-
+CPU::CPU(BUS* b) : bus(b), pc(0), v(false), n(false), z(false) {
+    for (int i = 0; i < 256; i++) {
+        regs[i] = 0; 
+    }
+}
 void CPU::step()
 {
   uint32_t instr = bus->read32(pc);
@@ -29,6 +32,13 @@ void CPU::update_cc(uint32_t result, bool overflow_happened)
   v = overflow_happened;
 }
 
+uint32_t CPU::get_reg(int index) const {
+    return regs[index];
+}
+void CPU::set_reg(uint8_t index, uint32_t value) {
+    regs[index] = value;
+}
+
 void CPU::execute_add(uint8_t r3, uint8_t r1, uint8_t r2)
 {
   int32_t a = static_cast< int32_t >(regs[r1]);
@@ -42,6 +52,6 @@ void CPU::execute_add(uint8_t r3, uint8_t r1, uint8_t r2)
   
   regs[r3] = static_cast<uint32_t>(res);
   
-  update_cc(regs[3], ovf);
+  update_cc(regs[r3], ovf);
   
 }
