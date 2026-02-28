@@ -27,6 +27,20 @@ private:
 
   // alu funcs
   void execute_add(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_substruct(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_multiply(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_divide(uint8_t r3, uint8_t r1, uint8_t r2);
+  
+  void execute_add_quick(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_substruct_quick(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_multiply_quick(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_divide_quick(uint8_t r3, uint8_t r1, uint8_t r2);
+  
+  void execute_and(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_or(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_xor(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_mask(uint8_t r3, uint8_t r1, uint8_t r2);
+  
 };
 
 #endif
