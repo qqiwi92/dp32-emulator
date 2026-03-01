@@ -25,7 +25,7 @@ private:
   bool v, n, z; // CC
 
   void update_cc(uint32_t result, bool overflow_happened);
-
+  uint32_t next_32bit_word();
   // alu funcs
   void execute_add(uint8_t r3, uint8_t r1, uint8_t r2);
   void execute_substruct(uint8_t r3, uint8_t r1, uint8_t r2);
@@ -37,10 +37,24 @@ private:
   void execute_multiply_quick(uint8_t r3, uint8_t r1, uint8_t r2);
   void execute_divide_quick(uint8_t r3, uint8_t r1, uint8_t r2);
 
+  // logical stuff
   void execute_and(uint8_t r3, uint8_t r1, uint8_t r2);
   void execute_or(uint8_t r3, uint8_t r1, uint8_t r2);
   void execute_xor(uint8_t r3, uint8_t r1, uint8_t r2);
   void execute_mask(uint8_t r3, uint8_t r1, uint8_t r2);
+  
+  // ram communication
+  void execute_load(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_store(uint8_t r3, uint8_t r1, uint8_t r2);
+  
+  void execute_load_quick(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_store_quick(uint8_t r3, uint8_t r1, uint8_t r2);
+  
+  //branch-jumping
+  void execute_branch(uint32_t word);
+  void execute_branch_quick(uint32_t word);
+  void execute_branch_indexed(uint32_t word);
+
 };
 
 #endif

@@ -8,6 +8,13 @@ CPU::CPU(BUS* b) : bus(b), pc(0), v(false), n(false), z(false)
     regs[i] = 0;
   }
 }
+
+uint32_t CPU::next_32bit_word() {
+    uint32_t word = bus->read32(pc);
+    pc++; 
+    return word;
+}
+
 void CPU::step()
 {
   uint32_t instr = bus->read32(pc);
@@ -20,7 +27,6 @@ void CPU::step()
   pc++;
 
   switch (op) {
-  // Стандартные операции (регистр-регистр)
   case 0x00:
     execute_add(r3, r1, r2);
     break;
