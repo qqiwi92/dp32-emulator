@@ -20,34 +20,34 @@ void CPU::step()
   pc++;
 
   switch (op) {
-      // Стандартные операции (регистр-регистр)
-      case 0x00:
-          execute_add(r3, r1, r2);
-          break;
-      case 0x01:
-          execute_substruct(r3, r1, r2);
-          break;
-      case 0x02:
-          execute_multiply(r3, r1, r2);
-          break;
-      case 0x03:
-          execute_divide(r3, r1, r2);
-          break;
-  
-      case 0x10:
-          execute_add_quick(r3, r1, r2); 
-          break;
-      case 0x11:
-          execute_substruct_quick(r3, r1, r2);
-          break;
-      case 0x12:
-          execute_multiply_quick(r3, r1, r2);
-          break;
-      case 0x13:
-          execute_divide_quick(r3, r1, r2);
-          break;
-  
-     // TODO: THE REST OF THE OPERATIONS
+  // Стандартные операции (регистр-регистр)
+  case 0x00:
+    execute_add(r3, r1, r2);
+    break;
+  case 0x01:
+    execute_substruct(r3, r1, r2);
+    break;
+  case 0x02:
+    execute_multiply(r3, r1, r2);
+    break;
+  case 0x03:
+    execute_divide(r3, r1, r2);
+    break;
+
+  case 0x10:
+    execute_add_quick(r3, r1, r2);
+    break;
+  case 0x11:
+    execute_substruct_quick(r3, r1, r2);
+    break;
+  case 0x12:
+    execute_multiply_quick(r3, r1, r2);
+    break;
+  case 0x13:
+    execute_divide_quick(r3, r1, r2);
+    break;
+
+    // TODO: THE REST OF THE OPERATIONS
   }
 }
 void CPU::update_cc(uint32_t result, bool overflow_happened)
@@ -178,57 +178,102 @@ void CPU::execute_divide_quick(uint8_t r3, uint8_t r1, uint8_t r2)
   update_cc(regs[r3], ovf);
 }
 
-
 void CPU::execute_multiply(uint8_t r3, uint8_t r1, uint8_t r2)
 {
-    int32_t a = static_cast<int32_t>(regs[r1]);
-    int32_t b = static_cast<int32_t>(regs[r2]);
-    int32_t res;
-    bool ovf = false;
+  int32_t a = static_cast< int32_t >(regs[r1]);
+  int32_t b = static_cast< int32_t >(regs[r2]);
+  int32_t res;
+  bool ovf = false;
 
-    if (a == 0 || b == 0) {
-        res = 0;
+  if (a == 0 || b == 0) {
+    res = 0;
+  } else {
+    int64_t wide_res = static_cast< int64_t >(a) * static_cast< int64_t >(b);
+
+    if (wide_res > INT32_MAX) {
+      res = INT32_MAX;
+      ovf = true;
+    } else if (wide_res < INT32_MIN) {
+      res = INT32_MIN;
+      ovf = true;
     } else {
-        int64_t wide_res = static_cast<int64_t>(a) * static_cast<int64_t>(b);
-
-        if (wide_res > INT32_MAX) {
-            res = INT32_MAX;
-            ovf = true;
-        } else if (wide_res < INT32_MIN) {
-            res = INT32_MIN;
-            ovf = true;
-        } else {
-            res = static_cast<int32_t>(wide_res);
-        }
+      res = static_cast< int32_t >(wide_res);
     }
+  }
 
-    regs[r3] = static_cast<uint32_t>(res);
-    update_cc(regs[r3], ovf);
+  regs[r3] = static_cast< uint32_t >(res);
+  update_cc(regs[r3], ovf);
 }
 
-void CPU::execute_multiply(uint8_t r3, uint8_t r1, uint8_t r2)
+void CPU::execute_multiply_quick(uint8_t r3, uint8_t r1, uint8_t r2)
 {
-    int32_t a = static_cast<int32_t>(regs[r1]);
-    int32_t b = static_cast<int32_t>(r2);
-    int32_t res;
-    bool ovf = false;
+  int32_t a = static_cast< int32_t >(regs[r1]);
+  int32_t b = static_cast< int32_t >(r2);
+  int32_t res;
+  bool ovf = false;
 
-    if (a == 0 || b == 0) {
-        res = 0;
+  if (a == 0 || b == 0) {
+    res = 0;
+  } else {
+    int64_t wide_res = static_cast< int64_t >(a) * static_cast< int64_t >(b);
+
+    if (wide_res > INT32_MAX) {
+      res = INT32_MAX;
+      ovf = true;
+    } else if (wide_res < INT32_MIN) {
+      res = INT32_MIN;
+      ovf = true;
     } else {
-        int64_t wide_res = static_cast<int64_t>(a) * static_cast<int64_t>(b);
-
-        if (wide_res > INT32_MAX) {
-            res = INT32_MAX;
-            ovf = true;
-        } else if (wide_res < INT32_MIN) {
-            res = INT32_MIN;
-            ovf = true;
-        } else {
-            res = static_cast<int32_t>(wide_res);
-        }
+      res = static_cast< int32_t >(wide_res);
     }
+  }
 
-    regs[r3] = static_cast<uint32_t>(res);
-    update_cc(regs[r3], ovf);
+  regs[r3] = static_cast< uint32_t >(res);
+  update_cc(regs[r3], ovf);
+}
+
+void CPU::execute_and(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  uint32_t a = regs[r1];
+  uint32_t b = regs[r2];
+  int32_t res = a & b;
+  bool ovf = false;
+
+  regs[r3] = static_cast< uint32_t >(res);
+
+  update_cc(regs[r3], ovf);
+}
+
+void CPU::execute_or(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  uint32_t a = regs[r1];
+  uint32_t b = regs[r2];
+  int32_t res = a | b;
+  bool ovf = false;
+
+  regs[r3] = static_cast< uint32_t >(res);
+
+  update_cc(regs[r3], ovf);
+}
+void CPU::execute_xor(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  uint32_t a = regs[r1];
+  uint32_t b = regs[r2];
+  int32_t res = a ^ b;
+  bool ovf = false;
+
+  regs[r3] = static_cast< uint32_t >(res);
+
+  update_cc(regs[r3], ovf);
+}
+void CPU::execute_mask(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  uint32_t a = regs[r1];
+  uint32_t b = regs[r2];
+  int32_t res = a & (~b);
+  bool ovf = false;
+
+  regs[r3] = static_cast< uint32_t >(res);
+
+  update_cc(regs[r3], ovf);
 }
