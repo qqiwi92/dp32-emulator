@@ -9,10 +9,20 @@ CPU::CPU(BUS* b) : bus(b), pc(0), v(false), n(false), z(false)
   }
 }
 
-uint32_t CPU::next_32bit_word() {
-    uint32_t word = bus->read32(pc);
-    pc++; 
-    return word;
+uint32_t CPU::next_32bit_word()
+{
+  uint32_t word = bus->read32(pc);
+  pc++;
+  return word;
+}
+bool CPU::flags_check(uint8_t mask) {
+    bool iv = (mask >> 3) & 1; 
+    bool mv = (mask >> 2) & 1; 
+    bool mn = (mask >> 1) & 1; 
+    bool mz = (mask >> 0) & 1; 
+
+    bool condition = (mv && v) || (mn && n) || (mz && z);
+    return condition == iv; 
 }
 
 void CPU::step()
@@ -40,6 +50,19 @@ void CPU::step()
     execute_divide(r3, r1, r2);
     break;
 
+  case 0x04:
+    execute_and(r3, r1, r2);
+    break;
+  case 0x05:
+    execute_or(r3, r1, r2);
+    break;
+  case 0x06:
+    execute_xor(r3, r1, r2);
+    break;
+  case 0x07:
+    execute_mask(r3, r1, r2);
+    break;
+
   case 0x10:
     execute_add_quick(r3, r1, r2);
     break;
@@ -53,7 +76,31 @@ void CPU::step()
     execute_divide_quick(r3, r1, r2);
     break;
 
-    // TODO: THE REST OF THE OPERATIONS
+  case 0x20:
+    execute_load(r3, r1, r2);
+    break;
+  case 0x21:
+    execute_store(r3, r1, r2);
+    break;
+  case 0x30:
+    execute_load_quick(r3, r1, r2);
+    break;
+  case 0x31:
+    execute_store_quick(r3, r1, r2);
+    break;
+
+  case 0x40:
+    execute_branch(instr);
+    break;
+  case 0x41:
+    execute_branch_indexed(instr);
+    break;
+  case 0x50:
+    execute_branch_quick(instr);
+    break;
+
+  default:
+    break;
   }
 }
 void CPU::update_cc(uint32_t result, bool overflow_happened)
@@ -282,4 +329,14 @@ void CPU::execute_mask(uint8_t r3, uint8_t r1, uint8_t r2)
   regs[r3] = static_cast< uint32_t >(res);
 
   update_cc(regs[r3], ovf);
+}
+
+void CPU::execute_branch(uint32_t word)
+{
+  uint8_t cond_mask = (word >> 16) & 0x0F;
+  int32_t displacement = static_cast< int32_t >(next_32bit_word());
+  
+  if (flags_check(cond_mask)) {
+    pc = pc + displacement;
+  }
 }

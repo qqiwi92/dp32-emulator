@@ -26,6 +26,7 @@ private:
 
   void update_cc(uint32_t result, bool overflow_happened);
   uint32_t next_32bit_word();
+  bool flags_check(uint8_t flags);
   // alu funcs
   void execute_add(uint8_t r3, uint8_t r1, uint8_t r2);
   void execute_substruct(uint8_t r3, uint8_t r1, uint8_t r2);
