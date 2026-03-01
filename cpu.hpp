@@ -45,8 +45,8 @@ private:
   void execute_mask(uint8_t r3, uint8_t r1, uint8_t r2);
   
   // ram communication
-  void execute_load(uint8_t r3, uint8_t r1, uint8_t r2);
-  void execute_store(uint8_t r3, uint8_t r1, uint8_t r2);
+  void execute_load(uint8_t r3, uint8_t r1, uint8_t);
+  void execute_store(uint8_t r3, uint8_t r1, uint8_t);
   
   void execute_load_quick(uint8_t r3, uint8_t r1, uint8_t r2);
   void execute_store_quick(uint8_t r3, uint8_t r1, uint8_t r2);

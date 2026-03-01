@@ -15,14 +15,15 @@ uint32_t CPU::next_32bit_word()
   pc++;
   return word;
 }
-bool CPU::flags_check(uint8_t mask) {
-    bool iv = (mask >> 3) & 1; 
-    bool mv = (mask >> 2) & 1; 
-    bool mn = (mask >> 1) & 1; 
-    bool mz = (mask >> 0) & 1; 
+bool CPU::flags_check(uint8_t mask)
+{
+  bool iv = (mask >> 3) & 1;
+  bool mv = (mask >> 2) & 1;
+  bool mn = (mask >> 1) & 1;
+  bool mz = (mask >> 0) & 1;
 
-    bool condition = (mv && v) || (mn && n) || (mz && z);
-    return condition == iv; 
+  bool condition = (mv && v) || (mn && n) || (mz && z);
+  return condition == iv;
 }
 
 void CPU::step()
@@ -335,8 +336,60 @@ void CPU::execute_branch(uint32_t word)
 {
   uint8_t cond_mask = (word >> 16) & 0x0F;
   int32_t displacement = static_cast< int32_t >(next_32bit_word());
-  
+
   if (flags_check(cond_mask)) {
-    pc = pc + displacement;
+    pc = pc + displacement; // we increment pc two times so it is now pointing
+                            // at cell after the displacement + displacement
   }
+}
+
+void CPU::execute_branch_quick(uint32_t word)
+{
+  uint8_t cond_mask = (word >> 16) & 0x0F;
+  int8_t displacement8 = static_cast< int8_t >(word & 0xFF);
+
+  if (flags_check(cond_mask)) {
+    pc = pc + displacement8; // we increment pc two times so it is now pointing
+                             // at cell after the displacement + displacement
+  }
+}
+
+void CPU::execute_branch_indexed(uint32_t word)
+{
+  uint8_t cond_mask = (word >> 16) & 0x0F;
+  uint8_t r1 = (word >> 8) & 0xFF;
+
+  int32_t displacement = static_cast< int32_t >(next_32bit_word());
+
+  if (flags_check(cond_mask)) {
+    pc = regs[r1] + displacement;
+  }
+}
+
+void CPU::execute_load(uint8_t r3, uint8_t r1, uint8_t /*ignoring r2*/)
+{
+  int32_t disp = static_cast< int32_t >(next_32bit_word());
+  uint32_t addr = regs[r1] + disp;
+  regs[r3] = bus->read32(addr);
+}
+
+void CPU::execute_load_quick(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  int32_t disp8 = static_cast< int8_t >(r2);
+  uint32_t addr = regs[r1] + disp8;
+  regs[r3] = bus->read32(addr);
+}
+
+void CPU::execute_store(uint8_t r3, uint8_t r1, uint8_t /*ignoring r2*/)
+{
+  int32_t disp = static_cast< int32_t >(next_32bit_word());
+  uint32_t addr = regs[r1] + disp;
+  bus->write32(addr, regs[r3]);
+}
+
+void CPU::execute_store_quick(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  int32_t disp8 = static_cast< int8_t >(r2);
+  uint32_t addr = regs[r1] + disp8;
+  bus->write32(addr, regs[r3]);
 }
