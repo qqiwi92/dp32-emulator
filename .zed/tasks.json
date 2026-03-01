@@ -1,9 +1,16 @@
 [
   {
     "label": "C++: Build and Run",
-    "command": "g++ -std=c++17 *.cpp -o main && ./main",
-    "use_new_terminal": true,
+    "command": "mkdir -p build && g++ -std=c++17 src/*.cpp -I include -o build/main && ./build/main",
+    "use_new_terminal": false,
     "allow_concurrent_runs": false,
-    "reveal": "always",
+    "reveal": "always"
   },
+  {
+    "label": "WIN: C++: Build and Run",
+    "command": "if (!(Test-Path build)) { New-Item -ItemType Directory -Path build }; g++ -std=c++17 (Get-ChildItem src/*.cpp) -I include -o build/main.exe; if ($?) { ./build/main.exe }",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  }
 ]
