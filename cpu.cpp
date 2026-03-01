@@ -107,3 +107,104 @@ void CPU::execute_substruct_quick(uint8_t r3, uint8_t r1, uint8_t r2)
 
   update_cc(regs[r3], ovf);
 }
+
+void CPU::execute_divide(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  int32_t a = static_cast< int32_t >(regs[r1]);
+  int32_t b = static_cast< int32_t >(regs[r2]);
+  int32_t res;
+  bool ovf;
+  if (b == 0) {
+    res = a >= 0 ? INT32_MAX : INT32_MIN;
+    ovf = true;
+  } else if (a == INT32_MIN && b == -1) {
+    res = INT32_MIN;
+    ovf = true;
+  } else {
+
+    res = a / b;
+    ovf = false;
+  }
+
+  regs[r3] = static_cast< uint32_t >(res);
+
+  update_cc(regs[r3], ovf);
+}
+
+void CPU::execute_divide_quick(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+  int32_t a = static_cast< int32_t >(regs[r1]);
+  int32_t b = static_cast< int32_t >(r2);
+  int32_t res;
+  bool ovf;
+  if (b == 0) {
+    res = a >= 0 ? INT32_MAX : INT32_MIN;
+    ovf = true;
+  } else if (a == INT32_MIN && b == -1) {
+    res = INT32_MIN;
+    ovf = true;
+  } else {
+
+    res = a / b;
+    ovf = false;
+  }
+
+  regs[r3] = static_cast< uint32_t >(res);
+
+  update_cc(regs[r3], ovf);
+}
+
+
+void CPU::execute_multiply(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+    int32_t a = static_cast<int32_t>(regs[r1]);
+    int32_t b = static_cast<int32_t>(regs[r2]);
+    int32_t res;
+    bool ovf = false;
+
+    if (a == 0 || b == 0) {
+        res = 0;
+    } else {
+        int64_t wide_res = static_cast<int64_t>(a) * static_cast<int64_t>(b);
+
+        if (wide_res > INT32_MAX) {
+            res = INT32_MAX;
+            ovf = true;
+        } else if (wide_res < INT32_MIN) {
+            res = INT32_MIN;
+            ovf = true;
+        } else {
+            res = static_cast<int32_t>(wide_res);
+        }
+    }
+
+    regs[r3] = static_cast<uint32_t>(res);
+    update_cc(regs[r3], ovf);
+}
+
+void CPU::execute_multiply(uint8_t r3, uint8_t r1, uint8_t r2)
+{
+    int32_t a = static_cast<int32_t>(regs[r1]);
+    int32_t b = static_cast<int32_t>(r2);
+    int32_t res;
+    bool ovf = false;
+
+    if (a == 0 || b == 0) {
+        res = 0;
+    } else {
+        int64_t wide_res = static_cast<int64_t>(a) * static_cast<int64_t>(b);
+
+        if (wide_res > INT32_MAX) {
+            res = INT32_MAX;
+            ovf = true;
+        } else if (wide_res < INT32_MIN) {
+            res = INT32_MIN;
+            ovf = true;
+        } else {
+            res = static_cast<int32_t>(wide_res);
+        }
+    }
+
+    regs[r3] = static_cast<uint32_t>(res);
+    update_cc(regs[r3], ovf);
+}
