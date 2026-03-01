@@ -15,6 +15,7 @@ public:
   bool get_z() const { return z; }
   bool get_n() const { return n; }
   bool get_v() const { return v; }
+  uint32_t get_pc() const { return pc; };
 
 private:
   BUS* bus;

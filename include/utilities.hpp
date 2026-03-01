@@ -3,7 +3,10 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <cstdint>
 
+std::vector<uint32_t> load_hex_program(const std::string& filename);
 template < typename T > void print(const T& value)
 {
   std::cout << "Single value: " << value << std::endl;
