@@ -20,10 +20,34 @@ void CPU::step()
   pc++;
 
   switch (op) {
-  case 0x00:
-    execute_add(r3, r1, r2);
-    break;
-    // TODO: THE REST OF THE OPERATIONS
+      // Стандартные операции (регистр-регистр)
+      case 0x00:
+          execute_add(r3, r1, r2);
+          break;
+      case 0x01:
+          execute_substruct(r3, r1, r2);
+          break;
+      case 0x02:
+          execute_multiply(r3, r1, r2);
+          break;
+      case 0x03:
+          execute_divide(r3, r1, r2);
+          break;
+  
+      case 0x10:
+          execute_add_quick(r3, r1, r2); 
+          break;
+      case 0x11:
+          execute_substruct_quick(r3, r1, r2);
+          break;
+      case 0x12:
+          execute_multiply_quick(r3, r1, r2);
+          break;
+      case 0x13:
+          execute_divide_quick(r3, r1, r2);
+          break;
+  
+     // TODO: THE REST OF THE OPERATIONS
   }
 }
 void CPU::update_cc(uint32_t result, bool overflow_happened)
